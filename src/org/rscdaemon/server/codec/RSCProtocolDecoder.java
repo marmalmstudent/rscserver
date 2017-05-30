@@ -22,30 +22,15 @@ public class RSCProtocolDecoder extends CumulativeProtocolDecoder {
 	 * @return Whether enough data was available to create a packet
 	 */
 	protected boolean doDecode(IoSession session, ByteBuffer in, ProtocolDecoderOutput out) {
-		if (in.remaining() >= 2) {
+		if (in.remaining() >= 2)
+		{
 			int length = in.get();
-			if (length >= 160) {
-				length = (length - 160) * 256 + in.get();
-			}
+			length = length * 256 + in.get();
 			if (length <= in.remaining()) {
 				byte[] payload = new byte[length - 1];
 				int id;
-				if(length < 160) {
-					if (length > 1) {
-						payload[length - 2] = in.get();
-						id = in.getUnsigned();
-						if (length - 2 > 0) {
-							in.get(payload, 0, length - 2);
-						}
-					}
-					else {
-						id = in.getUnsigned();
-					}
-				}
-				else {
-					id = in.getUnsigned();
-					in.get(payload);
-				}
+				id = in.getUnsigned();
+				in.get(payload);
 				out.write(new RSCPacket(session, id, payload));
 				return true;
 			}

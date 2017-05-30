@@ -33,17 +33,8 @@ public class RSCProtocolEncoder implements ProtocolEncoder {
 		if (!p.isBare()) {
 			buffer = ByteBuffer.allocate(dataLength + 3);
 			packetLength++;
-			if (data.length >= 160) {
-				buffer.put((byte) (160 + (packetLength / 256)));
-				buffer.put((byte) (packetLength & 0xff));
-			}
-			else {
-				buffer.put((byte) (packetLength));
-				if (dataLength > 0) {
-					dataLength--;
-					buffer.put((byte) data[dataLength]);
-				}
-			}
+			buffer.put((byte) (packetLength / 256));
+			buffer.put((byte) (packetLength & 0xff));
 			buffer.put((byte) p.getID());
 		}
 		else {
